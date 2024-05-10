@@ -21,6 +21,7 @@
             v-for="searchResult in mapboxSearchResults"
             :key="searchResult.id"
             class="py-2 cursor-pointer"
+            @click="previewCity(searchResult)"
           >
             <!-- V5 -->
             <!-- {{ searchResult.place_name }} -->
@@ -36,6 +37,45 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+// V5
+// const previewCity = (searchResult) => {
+//   console.log(searchResult);
+//   const [city, state] = searchResult.place_name.split(", ");
+//   router.push({
+//     name: "cityView",
+//     params: {
+//       state: state.replaceAll(" ", ""),
+//       city: city.replaceAll(" ", ""),
+//     },
+//     query: {
+//       lat: searchResult.geometry.coordinates[1],
+//       long: searchResult.geometry.coordinates[0],
+//       preview: true,
+//     },
+//   });
+// };
+
+// V6
+const previewCity = (searchResult) => {
+  console.log(searchResult);
+  const [city, state] = searchResult.properties.full_address.split(",");
+  router.push({
+    name: "cityView",
+    params: {
+      state: state.replaceAll(" ", ""),
+      city: city.replaceAll(" ", ""),
+    },
+    query: {
+      lat: searchResult.properties.coordinates.latitude,
+      long: searchResult.properties.coordinates.longitude,
+      preview: true,
+    },
+  });
+};
 
 const mapboxAPIKey =
   "pk.eyJ1IjoiaWJudS1zb2RpayIsImEiOiJjbHcweDdwb2cwNW1rMmpudmtlODZhcTRtIn0.u-iJiu2sUaqQzd49nXw6BQ";
